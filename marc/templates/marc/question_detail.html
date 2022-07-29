@@ -1,11 +1,68 @@
-<h1>{{ question.subject }}</h1>
+{% extends 'base.html' %}
+{% block content %}
+<div class="container my-3">
+    <!-- 질문 -->
+    <h2 class="border-bottom py-2">{{ question.subject }}</h2>
+    <div class="card my-3">
+        <div class="card-body">
+            <div class="card-text" style="white-space: pre-line;">{{ question.context }}</div>
+            <div class="d-flex justify-content-end">
+                <div class="badge bg-light text-dark p-2">
+                    {{ question.create_date }}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 답변 -->
+    <h5 class="border-bottom my-3 py-2">{{ question.answer_set.count }} 개의 답변이 있습니다.</h5>
+    {% for answer in question.answer_set.all %}
+    <div class="card my-3">
+        <div class="card-body">
+            <div class="card-text" style="white-space: pre-line;">{{ answer.content }}</div>
+            <div class="d=flex justify-content-end">
+                <div class="badge bh-light text-dark p-2">
+                    {{ answer.create_date }}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
 
-<div>
-    {{ question.content }}
+    {% if messages %}
+<ul class="absolute mx-auto left-1/2 top-0 -translate-x-2/4 flex justify-center">
+    {% for message in messages %}
+        <li class="message opacity-40  bg-gray-700 rounded-full px-6 py-4 font-medium text-black {% if message.tags %} {{ message.tags }} {% endif %}">{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+    <!--
+    {% for message in messages %}
+    <div class="alert {{ message.tags }} alert-auto-dismissible alert-dismissible notification-container text-center" role="alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {{ message }}
+    </div>
+    {% endfor %} -->
+
+    <script>
+    window.setTimeout(function() {
+    $(".alert-auto-dismissible").fadeTo(500, 0).slideUp(500, function(){
+        $(this).remove();
+    });
+}, 4000);
+    </script>
+
+
+    <!-- 답변 등록 -->
+    <form action="{% url 'marc:answer_create' question.id %}" method="post" class="my-3">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="count" class="form-label">답변내용</label>
+            <textarea name="content" id="content" class="form-control" rows="'10"></textarea>
+            <input type="submit" value="답변등록" class="btn btn-primary my-3">
+        </div>
+    </form>
 </div>
-
-<form action="{% 'marc:answer_create' question.id %}" method="post">
-    {% csrf_token %}
-    <textarea name="content" id="content" row="15"></textarea>
-    <input type="submit' value="답변등록">
-</form>
+{% endblock %}
