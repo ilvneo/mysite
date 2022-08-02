@@ -4,6 +4,7 @@ from django.db import models
 
 
 class Question(models.Model):
+    objects = None
     subject = models.CharField(max_length=255)
     content = models.TextField()
     create_date = models.DateTimeField()
