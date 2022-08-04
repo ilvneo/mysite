@@ -1,4 +1,4 @@
-"""mysite URL Configuration
+"""config URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.0/topics/http/urls/
@@ -23,4 +23,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('common/', include('common.urls')),
     path('marc/', include('marc.urls')),
+    path('', views.index, name='index'), # '/'에 해당되는 path
 ]
