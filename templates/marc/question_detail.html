@@ -26,8 +26,8 @@
                 {% if request.user == question.author %}
                 <a href="{% url 'marc:question_modify' question.id  %}"
                    class="btn btn-sm btn-outline-secondary">수정</a>
-                <a href="javacript:void(0)" class="delete btn btn-sm btn-outline-secondary"
-                   data-url="{% url 'marc:question_delete' question.id %}">삭제</a>
+                <a href="#" class="delete btn btn-sm btn-outline-secondary"
+                   data-uri="{% url 'marc:question_delete' question.id  %}">삭제</a>
                 {% endif %}
             </div>
         </div>
@@ -42,6 +42,13 @@
                 <div class="badge bh-light text-dark p-2">
                     {{ answer.create_date }}
                 </div>
+            </div>
+            <div>
+                {% if request.user == answer.author %}
+                <a href="{% url 'marc:answer_modify' answer.id %}" class="btn btn-sm btn-outline-secondary ">수정</a>
+                <a href="#" class="delete btn btn-sm btn-outline-secondary" data-uri="{% url 'marc:answer_delete' answer.id %}">삭제</a>
+                {% endif %}
+
             </div>
         </div>
     </div>
@@ -69,11 +76,10 @@
 
     <script>
     window.setTimeout(function() {
-    $(".alert-auto-dismissible").fadeTo(500, 0).slideUp(500, function(){
-        $(this).remove();
-    });
-}, 4000);
-
+        $(".alert-auto-dismissible").fadeTo(500, 0).slideUp(500, function(){
+            $(this).remove();
+        });
+    }, 4000);
     </script>
 
 
@@ -127,13 +133,13 @@
 {% endblock %}
 {% block script %}
 <script type='text/javascript'>
-    const delete_elements = document.getElementByClassName("delete");
-    Array.from(delete_elements).forEach(function(element) {
-        element.addEventListener('click', function() {
-            if(confirm("정말로 삭제하시겠습니까?")) {
-                location.href = this.dataset.uri;
-            };
-        }
+const delete_elements = document.getElementsByClassName("delete");
+Array.from(delete_elements).forEach(function(element) {
+    element.addEventListener('click', function() {
+        if(confirm("정말로 삭제하시겠습니까?")) {
+            location.href = this.dataset.uri;
+        };
     });
+});
 </script>
 {% endblock %}
