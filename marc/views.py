@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render
 
 # Create your views here.
@@ -6,11 +7,13 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Question, Answer
 from django.utils import timezone
 from django.contrib import messages
-from .forms import QuestionForm, AnswerForm
+from .forms import QuestionForm, AnswerForm, DocumentForm
 import logging
 from django.http import HttpResponseNotAllowed
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse_lazy
+from django.views.generic.edit import FormView
 
 logger = logging.getLogger(__name__)
 
@@ -39,13 +42,15 @@ def detail(request, question_id):
 def question_create(request):
     print("request.method : " + request.method)
     if request.method == 'POST':
-        form = QuestionForm(request.POST)
+        form = QuestionForm(request.POST, request.FILES)
 
+        print("files : "  + str(request.FILES))
         print("form.is_valid(): " + str(form.is_valid()))
         if form.is_valid():  # 폼 유효하다면
             question = form.save(commit=False)  # 임시 저장하여 question 객체를 리턴한다.
             question.author = request.user # author 속성에 로그인 계정 저장
             question.create_date = timezone.now()  # 실제 저장을 위해 작성일시를 설정한다.
+            question.docfile1 = request.FILES['docfile1']
             question.save()  # 데이터를 실제로 저장한다.
 
             return redirect('marc:index')
@@ -144,4 +149,17 @@ def answer_delete(request, answer_id):
         answer.delete()
     return redirect('marc:detail', question_id=answer.question.id)
 
+
+
+class DocumentCreateView(FormView):
+    template_name = "marc/question_create.html"
+    form_class = DocumentForm
+    success_url = reverse_lazy('document_list')
+
+    def form_valid(self, form):
+        if self.request.FILES:
+            form.instance.attached = self.request.FILES['upload']
+
+        form.save()
+        return super().form_valid(form)
 # https://wikidocs.net/71445
