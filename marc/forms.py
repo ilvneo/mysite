@@ -4,6 +4,8 @@ from .models import Document
 
 
 class QuestionForm(forms.ModelForm):
+
+    #upload = forms.FileField(label='첨부 파일', required=True, widget=forms.FileInput(attrs={'class': 'form'}))
     class Meta:
         model = Question
         fields = ['subject', 'content', 'docfile1', 'docfile2']  # QuestionForm에서 사용할 Question 모델의 속성
@@ -15,8 +17,8 @@ class QuestionForm(forms.ModelForm):
             'docfile2': '첨부 파일1',
         }
 
-        docfile1 = forms.FileField(label='첨부파일1', help_text='최대 42메가')
-        docfile2 = forms.FileField(label='첨부파일2', help_text='최대 42메가')
+        docfile1 = forms.FileField(label='첨부파일1', help_text='최대 42메가', required=True, widget=forms.FileInput(attrs={'class': 'form'}))
+        docfile2 = forms.FileField(label='첨부파일2', help_text='최대 42메가', required=True, widget=forms.FileInput(attrs={'class': 'form'}))
 
         # widgets = {
         #     'subject': forms.TextInput(attrs={'class': 'form-control'}),

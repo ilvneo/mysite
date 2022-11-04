@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import os.path
+
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
@@ -29,16 +31,24 @@ class Answer(models.Model):
         return self.content
 
 
+# class Document(models.Model):
+#     attached = models.FileField('첨부 파일', upload_to='documents/%Y/%m/%d')
+#     create_date = models.DateTimeField()
+#     modify_date = models.DateTimeField(null=True, blank=True)
+#
+#     def get_filename(self):
+#         return os.path.basename(self.attached.name)
+#
+#     def __str__(self):
+#         return self.attached.name
+
 class Document(models.Model):
-    attached = models.FileField('첨부 파일', upload_to='ducments/%Y/%m/%d')
-    create_date = models.DateTimeField()
-    modify_date = models.DateTimeField(null=True, blank=True)
+    title = models.CharField(max_length=200)
+    uploadedFile = models.FileField('첨부파일', upload_to="result/")
+    dateTimeOfUpload = models.DateTimeField(auto_now=True)
 
     def get_filename(self):
-        return os.path.basename(self.attached.name)
-
-    def __str__(self):
-        return self.attached.name
+        return os.path.basename(self.uploadedFile.name)
 
 
 class EduInstitution(models.Model):
@@ -50,4 +60,3 @@ class EduInstitution(models.Model):
         return self.content
 
 
-https://jonghoit.tistory.com/27

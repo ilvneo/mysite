@@ -9,6 +9,8 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
+import os
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 
 import os, json
 from pathlib import Path

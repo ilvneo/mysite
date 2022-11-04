@@ -1,7 +1,7 @@
 from django.urls import path
 
 from . import views
-
+from marc.views import FileDownloadView
 app_name = 'marc'
 
 urlpatterns = [
@@ -14,5 +14,7 @@ urlpatterns = [
     path('answer/modify/<int:answer_id>/', views.answer_modify, name='answer_modify'),
     path('answer/delete/<int:answer_id>/', views.answer_delete, name='answer_delete'),
     path('answer/delete/<int:answer_id>/', views.answer_delete, name='answer_delete'),
-    path('question/createnew/', views.DocumentForm, name='new')
+    path('question/createnew/', views.DocumentCreateView.as_view(), name='new'),
+    path("", views.uploadFile, name="uploadFile"),
+    path('document/<int:document_id>/', FileDownloadView.as_view(), name="download")
 ]

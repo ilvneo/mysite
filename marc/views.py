@@ -14,6 +14,12 @@ from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.views.generic.edit import FormView
+from django.views.generic.detail import SingleObjectMixin
+from django.http import FileResponse
+from django.core.files.storage import FileSystemStorage
+from django.views.generic import View
+
+from .models import Document
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +43,12 @@ def detail(request, question_id):
 
     return render(request, 'marc/question_detail.html', context)
 
+def handle_uploaded_file(f):
+    print("handle_uploaded_file @ f : " + str(f))
+
+    with open('media/'+f.name, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
 
 @login_required(login_url='common:login')
 def question_create(request):
@@ -44,13 +56,23 @@ def question_create(request):
     if request.method == 'POST':
         form = QuestionForm(request.POST, request.FILES)
 
-        print("files : "  + str(request.FILES))
+        print("files : " + str(request.FILES))
         print("form.is_valid(): " + str(form.is_valid()))
+
         if form.is_valid():  # 폼 유효하다면
             question = form.save(commit=False)  # 임시 저장하여 question 객체를 리턴한다.
             question.author = request.user # author 속성에 로그인 계정 저장
             question.create_date = timezone.now()  # 실제 저장을 위해 작성일시를 설정한다.
+
+
             question.docfile1 = request.FILES['docfile1']
+            question.docfile2 = request.FILES['docfile2']
+
+            print(" docfile1 upload_to : " + question.docfile1.upload_to)
+
+            # handle_uploaded_file(question.docfile1)
+            #handle_uploaded_file(question.docfile2)
+
             question.save()  # 데이터를 실제로 저장한다.
 
             return redirect('marc:index')
@@ -59,7 +81,6 @@ def question_create(request):
     context = {'form': form}
 
     return render(request, 'marc/question_form.html', context)
-
 
 @login_required(login_url='common:login')
 def answer_create(request, question_id):
@@ -152,7 +173,7 @@ def answer_delete(request, answer_id):
 
 
 class DocumentCreateView(FormView):
-    template_name = "marc/question_create.html"
+    template_name = "marc/new.html"
     form_class = DocumentForm
     success_url = reverse_lazy('document_list')
 
@@ -163,3 +184,47 @@ class DocumentCreateView(FormView):
         form.save()
         return super().form_valid(form)
 # https://wikidocs.net/71445
+
+
+# def fileUpload(request):
+#     if request.method == 'POST';
+#         fileUpload = FileUpload(
+#
+#     )
+#     return render(request, 'fileupload.html', context)
+
+
+
+def uploadFile(request):
+    if request.method == "POST":
+        # Fetching the form data
+        fileTitle = request.POST["fileTitle"]
+        uploadedFile = request.FILES["uploadedFile"]
+
+        # Saving the information in the database
+        document = models.Document(
+            title=fileTitle,
+            uploadedFile=uploadedFile
+        )
+        document.save()
+
+    documents = models.Document.objects.all()
+
+    return render(request, "excel/upload-file.html", context={
+        "files": documents
+    })
+
+
+class FileDownloadView(SingleObjectMixin, View):
+    queryset = Document.objects.all()
+
+    def get(self, request, document_id):
+        object = self.get_object(document_id)
+
+        file_path = object.attached.path
+        file_type = object.content_type  # django file object에 content type 속성이 없어서 따로 저장한 필드
+        fs = FileSystemStorage(file_path)
+        response = FileResponse(fs.open(file_path, 'rb'), content_type=file_type)
+        response['Content-Disposition'] = f'attachment; filename={object.get_filename()}'
+
+        return response
