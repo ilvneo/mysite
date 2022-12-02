@@ -1,0 +1,94 @@
+{% block content %}
+<style>
+    .modal_title{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    .modal_title_side{
+        flex: 0 0 40px;
+        text-align: center;
+    }
+    .modal_overlay {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(1.5px);
+        -webkit-backdrop-filter: blur(1.5px);
+    }
+
+    .modal_window {
+        background: white;
+        backdrop-filter: blur(13.5px);
+        -webkit-backdrop-filter: blur(13.5px);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        width: 800px;
+        height: 600px;
+        position: relative;
+        padding: 10px;
+    }
+
+</style>
+
+<div id="modal_add_feed" class="modal_overlay">
+    <div class="modal_window">
+        <div class="modal_title">
+            <div class="modal_title_side"></div>
+            <div id="add_feed">문서 다운로드</div>
+
+            <div class="modal_title_side">
+                    <span id="close_modal" class="material-icons-outlined">
+                        close
+                    </span>
+            </div>
+        </div>
+        <div class="model_contents">
+            <div id="문서 이름">
+                <p>== <span>제    목: </span> {{question.subject}} ==</p>
+                <a href="{% url 'marc:download_file' question.id 1 %}"><p><span>첨부파일1: </span>{{ question.docfile1 }}</p></a>
+                <a href="{% url 'marc:download_file' question.id 2 %}"><p><span>첨부파일2: </span>{{ question.docfile2 }}</p></a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    // 모달 띄우기 코드
+    const modal = document.getElementById("modal_add_feed");
+    console.log(modal);
+    const buttonAddFeed = document.getElementById("add_feed");
+    console.log(buttonAddFeed);
+    buttonAddFeed.addEventListener("click", e => {
+        modal.style.display = "flex";
+        document.body.style.overflowY = "hidden"; // 스크롤 없애기
+    });
+
+    // 모달 닫기 코드
+    const buttonCloseModal = document.getElementById("close_modal");
+    buttonCloseModal.addEventListener("click", e => {
+        modal.style.display = "none";
+        document.body.style.overflowY = "visible";
+
+        const referrer = document.referrer;
+        console.log("referrer: ", referrer);
+
+        location.replace(referrer);
+    });
+
+
+
+</script>
+{% endblock %}

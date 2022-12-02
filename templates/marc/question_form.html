@@ -1,5 +1,39 @@
 {% extends 'base.html' %}
 
+{% block script %}
+<script type="text/javascript">
+	function dmSearch() {
+		var department = document.getElementById("department");
+		var dmIndex = document.getElementById("department").options.selectedIndex;
+
+		console.log("dm value : " + department.options[dmIndex].value);
+	}
+	function rcSearch() {
+		var rCompetency = document.getElementById("relate_Competency");
+		var dmIndex = document.getElementById("relate_Competency").options.selectedIndex;
+		console.log("dm value : " + rCompetency.options[dmIndex].value);
+	}
+	function etSearch() {
+		var education_type  = document.getElementById("education_type");
+		var dmIndex = document.getElementById("education_type").options.selectedIndex;
+		console.log("et value : " + education_type.options[dmIndex].value);
+	}
+
+    $("#relate_Competency").change(function() {
+      if ($(this).data('options') == undefined) {
+        /*Taking an array of all options-2 and kind of embedding it on the relate_Competency*/
+        $(this).data('options', $('#education_part option').clone());
+        $(this).data('options', $('#education_part option').clone());
+      }
+      var id = $(this).val();
+      var options = $(this).data('options').filter('[value=' + id + ']');
+      $('#education_part').html(options);
+      console.log('options', options[0]);
+    });
+
+</script>
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <h5 class="my-3 border-bottom pb-2">교육등록</h5>
@@ -20,18 +54,106 @@
         {% endif %}
         <!-- 오류표시 End -->
         <div class="mb-3">
-            <label for="subject" class="form-label">교육명</label>
+            <label for="subject" class="form-label label-text">교육명</label>
             <input type="text" class="form-control" name="subject" id="subject"
                    value="{{ form.subject.value|default_if_none:'' }}">
         </div>
         <div class="mb-3">
-            <label for="content" class="form-label">교육내용</label>
+            <label for="content" class="form-label label-text">교육내용</label>
             <textarea class="form-control" name="content"
                       id="content" rows="10">{{ form.content.value|default_if_none:'' }}</textarea>
         </div>
+        <div class="mb-3 label-text">
+            <label for="department">부서명을 선택해 주세요.</label>
+            <select name="department" id="department" data-recovery="경영지원부" onclick="dmSearch()">
+                <option value="경영지원부">경영지원부</option>
+                <option value="안전관리부">안전관리부</option>
+                <option value="청렴감사부">청렴감사부</option>
+                <option value="체육사업부">체육사업부</option>
+                <option value="교통사업부">교통사업부</option>
+                <option value="도시환경부">도시환경부</option>
+                <option value="공공사업부">공공사업부</option>
+            </select>
+            <!--            <input type="text" class="form-control" name="department" id="department"-->
+            <!--                   value="{{ form.department.value|default_if_none:'' }}">-->
+        </div>
+        <div class="mb-3 label-text">
+            <label for="relate_Competency">관련역량</label>
+            <select name="relate_Competency" id="relate_Competency" onclick="rcSearch()">
+                <option value=""></option>
+                <option value="법정교육">법정교육</option>
+                <option value="공통역량">공통역량</option>
+                <option value="역할역량">역할역량</option>
+                <option value="직무역량">직무역량</option>
+                <option value="기타역량">기타역량</option>
+            </select>
+        </div>
+        <div class="mb-3 label-text">
+            <label for="education_part">교육분야</label>
+            <select name="education_part" id="education_part" onclick="rcSearch()">
+                <option value=""></option>
+                <option value="법정교육">4대폭력예방</option>
+                <option value="법정교육">장애인식개선</option>
+                <option value="법정교육">개인정보</option>
+                <option value="법정교육">아동학대예방</option>
+                <option value="법정교육">부패방지, 청렴</option>
+                <option value="법정교육">산업안전보건</option>
+                <option value="법정교육">정보공개</option>
+                <option value="법정교육">퇴직연금</option>
+                <option value="법정교육">기타</option>
+
+                <option value="공통역량">ESG 경영</option>
+                <option value="공통역량">중대재해처벌법</option>
+                <option value="공통역량">기타</option>
+                <option value="공통역량">직장 내 괴롭힘 방지</option>
+                <option value="공통역량">고객/수혜자지향</option>
+                <option value="공통역량">기타</option>
+
+                <option value="역할역량">신입직원</option>
+                <option value="역할역량">셀프리더십</option>
+                <option value="역할역량">여성리더</option>
+                <option value="역할역량">중간관리자</option>
+                <option value="역할역량">고위경영자</option>
+                <option value="역할역량">CEO 리더십</option>
+                <option value="역할역량">멘토링</option>
+                <option value="역할역량">기타</option>
+
+                <option value="직무역량">직무 전문교육</option>
+                <option value="직무역량">실무자과정</option>
+                <option value="직무역량">생애주기별</option>
+                <option value="직무역량">힐링&문화</option>
+                <option value="직무역량">기타</option>
+                <option value="직무역량">직무역량</option>
+
+                <option value="기타역량">개인소양</option>
+                <option value="기타역량">봉사활동</option>
+                <option value="기타역량">헌혈</option>
+            </select>
+        </div>
+        <div class="mb-3 label-text">
+            <label for="education_type">교육유형</label>
+            <select name="education_type" id="education_type" data-recovery="기타" onclick="etSearch()">
+                <option value="집합교육">집합교육</option>
+                <option value="직장교육(초빙강사)">직장교육(초빙강사)</option>
+                <option value="직장교육(부서자체)">직장교육(부서자체)</option>
+                <option value="현장교육">현장교육</option>
+                <option value="이러닝">이러닝</option>
+                <option value="워크숍">워크숍</option>
+                <option value="맨토, 코치활동">맨토, 코치활동</option>
+                <option value="봉사활동, 헌혈">봉사활동, 헌혈</option>
+                <option value="제안">제안</option>
+            </select>
+            <!--            <input type="text" class="form-control" name="department" id="department"-->
+            <!--                   value="{{ form.department.value|default_if_none:'' }}">-->
+        </div>
         <div class="mb-3">
-            <label for="content" class="form-label">첨부 파일1</label>
-               <p>{{ form.non_field_errors }}</p>
+            <label for="name" class="form-label label-text">이름</label>
+            <input type="text" class="form-control" name="name" id="name"
+                   value="{{ form.name.value|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="content" class="form-label label-text">첨부 파일1</label>
+            <p>{{ form.non_field_errors }}</p>
             <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
             <p>
                 {{ form.docfile.errors }}
@@ -41,9 +163,9 @@
                    value="{{ form.docfile1.value }}">
         </div>
 
-         <div class="mb-3">
-            <label for="content" class="form-label">첨부 파일2</label>
-               <p>{{ form.non_field_errors }}</p>
+        <div class="mb-3">
+            <label for="content" class="form-label label-text">첨부 파일2</label>
+            <p>{{ form.non_field_errors }}</p>
             <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
             <p>
                 {{ form.docfile.errors }}
@@ -61,3 +183,4 @@
     </form>
 </div>
 {% endblock %}
+

@@ -1,12 +1,25 @@
 {% extends 'base.html' %}
 {% load marc_filter %}
 {% block content %}
-<div class="container my-3">
+<div class="container-fluid">
     <table class="table">
         <thead>
-        <tr class="text-center table-dark">
+        <tr class="text-center table-primary top_title">
             <th>번호</th>
-            <th style="width:50%">제목</th>
+            <th>부서</th>
+            <th>직급</th>
+            <th>성명</th>
+            <th>관련역량</th>
+            <th>교육분야</th>
+            <th>교육유형</th>
+            <th style="width:20%">교육명</th>
+            <th>교육기관(사이트)</th>
+            <th>교육시작</th>
+            <th>교육종료</th>
+            <th>교육시간</th>
+            <th>교육비용</th>
+            <th>증빙자료</th>
+            <th>비고</th>
             <th>글쓴이</th>
             <th>작성일시</th>
         </tr>
@@ -14,19 +27,32 @@
         <tbody>
         {% if question_list %}
         {% for question in question_list %}
-        <tr class="text-center">
+        <tr class="list-font">
             <td>
                 <!-- 번호 = 전체건수 - 시작인덱스 - 현재인덱스 + 1 -->
                 {{ question_list.paginator.count|sub:question_list.start_index|sub:forloop.counter0|add:1 }}
             </td>
-            <td class="text-start">
+            <td class="text-center">{{ question.department }}</td> <!-- 글쓴이 추가 -->
+            <td class="text-center">{{ question.name }}</td> <!-- 글쓴이 추가 -->
+            <td class="text-center">{{ question.name }}</td> <!-- 글쓴이 추가 -->
+            <td class="text-center">{{ question.relate_Competency}}</td> <!-- 글쓴이 추가 -->
+            <td class="text-center">{{ question.education_part }}</td> <!-- 글쓴이 추가 -->
+            <td class="text-center">{{ question.education_type }}</td> <!-- 글쓴이 추가 -->
+            <td class="text-left text-start">
                 <a href="{% url 'marc:detail' question.id %}">{{ question.subject }}</a>
                 {% if question.answer_set.count > 0 %}
                 <span class="text-danger small mx-2">{{ question.answer_set.count }}</span>
                 {% endif %}
             </td>
-            <td>{{ question.author.username }}</td> <!-- 글쓴이 추가 -->
-            <td>{{ question.create_date }}</td>
+            <td class="text-center">{{ question.education_institute }}</td> <!-- 글쓴이 추가 -->
+            <td class="text-center">{{ question.education_start }}</td> <!-- 글쓴이 추가 -->
+            <td class="text-center">{{ question.education_end }}</td> <!-- 글쓴이 추가 -->
+            <td class="text-center">{{ question.education_time }}</td> <!-- 글쓴이 추가 -->
+            <td class="text-center">{{ question.education_cost }}</td> <!-- 글쓴이 추가 -->
+            <td class="text-center">{{ question.certificate_item }}</td> <!-- 글쓴이 추가 -->
+            <td class="text-center">{{ question.memo }}</td> <!-- 글쓴이 추가 -->
+            <td class="text-center">{{ question.author.username }}</td> <!-- 글쓴이 추가 -->
+            <td class="text-center">{{ question.create_date }}</td>
         </tr>
         {% endfor %}
         {% else %}
@@ -74,6 +100,6 @@
         {% endif %}
     </ul>
     <!-- 페이징처리 끝 -->
-    <a href="{% url 'marc:question_create' %}" class="btn btn-primary">질문 등록하기</a>
+    <a href="{% url 'marc:question_create' %}" class="btn btn-primary">교육이수 등록하기</a>
 </div>
 {% endblock %}

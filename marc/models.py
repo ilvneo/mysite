@@ -8,11 +8,25 @@ from django.contrib.auth.models import User
 
 class Question(models.Model):
     objects = None
+    department = models.TextField()
+    name = models.TextField()
+    relate_Competency = models.TextField()
+    education_part = models.TextField()
+    education_type = models.TextField()
+    education_institute = models.TextField()
+    education_start = models.DateTimeField()
+    education_end = models.DateTimeField()
+    education_time = models.TextField()
+    education_cost = models.TextField()
+    certificate_item = models.TextField()
+    memo = models.TextField()
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     subject = models.CharField(max_length=255)
     content = models.TextField()
     docfile1 = models.FileField(upload_to='documents/%Y/%m/%d')
     docfile2 = models.FileField(upload_to='documents/%Y/%m/%d')
+    doctype1 = models.TextField()
+    doctype2 = models.TextField()
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
 
