@@ -5,10 +5,12 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
-    <!-- pybo CSS -->
+
+    <!-- marc CSS -->
     <link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'bootstrap.min.css' %}">
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css"/>
+
     <title>Hello, marc!</title>
 </head>
 <body>
@@ -19,10 +21,13 @@
 {% endblock %}
 <!-- 기본 템플릿 안에 삽입될 내용 End -->
 <!-- Bootstrap JS -->
-<script src="{% static 'bootstrap.min.js' %}"></script>
 <script src="{% static 'jquery-3.6.1.min.js' %}"></script>
+<script src="{% static 'bootstrap.min.js' %}"></script>
+<script src="{% static 'moment.min.js' %}"></script>
+
 <!-- 자바스크립트 start -->
 {% block script %}
+
 {% endblock %}
 <!-- 자바스크립트 End -->
 </body>

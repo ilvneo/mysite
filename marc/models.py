@@ -1,8 +1,14 @@
 # -*- coding: utf-8 -*-
 import os.path
+import datetime
 
 from django.db import models
+from django.urls import reverse
+from django.utils import timezone
+
 from django.contrib.auth.models import User
+
+
 # Create your models here.
 
 
@@ -10,6 +16,7 @@ class Question(models.Model):
     objects = None
     department = models.TextField()
     name = models.TextField()
+    job_grade = models.TextField()
     relate_Competency = models.TextField()
     education_part = models.TextField()
     education_type = models.TextField()
@@ -32,6 +39,12 @@ class Question(models.Model):
 
     def __str__(self):
         return self.subject
+
+    def was_published_recently(self):
+        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+
+    def get_absolute_url(self):
+        return reverse('marc:detail', kwargs={'pk': self.pk})
 
 
 class Answer(models.Model):
@@ -72,5 +85,3 @@ class EduInstitution(models.Model):
 
     def __str__(self):
         return self.content
-
-

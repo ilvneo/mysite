@@ -8,7 +8,8 @@ from .models import Question, Answer
 from django.utils import timezone
 from django.contrib import messages
 from .forms import QuestionForm, AnswerForm, DocumentForm
-import logging, os
+import logging
+import os
 from django.http import HttpResponseNotAllowed
 from django.core.paginator import Paginator
 from django.contrib.auth.decorators import login_required
@@ -20,6 +21,10 @@ from django.core.files.storage import FileSystemStorage
 from django.views.generic import View
 
 from .models import Document
+
+
+
+
 
 logger = logging.getLogger(__name__)
 

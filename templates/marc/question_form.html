@@ -1,22 +1,14 @@
 {% extends 'base.html' %}
+{{ form.media }}
 
 {% block script %}
 <script type="text/javascript">
-	function dmSearch() {
-		var department = document.getElementById("department");
-		var dmIndex = document.getElementById("department").options.selectedIndex;
+	function rcSearch(value) {
+	    console.log(value, "!!");
 
-		console.log("dm value : " + department.options[dmIndex].value);
-	}
-	function rcSearch() {
-		var rCompetency = document.getElementById("relate_Competency");
-		var dmIndex = document.getElementById("relate_Competency").options.selectedIndex;
-		console.log("dm value : " + rCompetency.options[dmIndex].value);
-	}
-	function etSearch() {
-		var education_type  = document.getElementById("education_type");
-		var dmIndex = document.getElementById("education_type").options.selectedIndex;
-		console.log("et value : " + education_type.options[dmIndex].value);
+	    var selectedValue = document.getElementById(value);
+		var selectedIndex = document.getElementById(value).options.selectedIndex;
+		console.log("selected value : " + selectedValue.options[selectedIndex].value);
 	}
 
     $("#relate_Competency").change(function() {
@@ -31,6 +23,12 @@
       console.log('options', options[0]);
     });
 
+    $(function () {
+        $("#datetimepicker1").datetimepicker();
+    });
+
+
+
 </script>
 {% endblock %}
 
@@ -39,7 +37,7 @@
     <h5 class="my-3 border-bottom pb-2">교육등록</h5>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <!-- 오류표시 Start -->
+       <!-- 오류표시 Start -->
         {% if form.errors %}
         <div class="alert alert-danger" role="alert">
             {% for field in form %}
@@ -53,19 +51,28 @@
         </div>
         {% endif %}
         <!-- 오류표시 End -->
-        <div class="mb-3">
-            <label for="subject" class="form-label label-text">교육명</label>
-            <input type="text" class="form-control" name="subject" id="subject"
-                   value="{{ form.subject.value|default_if_none:'' }}">
-        </div>
-        <div class="mb-3">
-            <label for="content" class="form-label label-text">교육내용</label>
-            <textarea class="form-control" name="content"
-                      id="content" rows="10">{{ form.content.value|default_if_none:'' }}</textarea>
+        <div class="mb-3 label-text">
+            <label for="name" class="form-label">이름</label>
+            <input style="width:10rem; white-space: nowrap;" type="text" placeholder="김상현" class="form-control"
+                   name="name" id="name"
+                   value="{{ form.name.value|default_if_none:'' }}">
         </div>
         <div class="mb-3 label-text">
-            <label for="department">부서명을 선택해 주세요.</label>
-            <select name="department" id="department" data-recovery="경영지원부" onclick="dmSearch()">
+            <label for="job_grade">직급</label>
+            <select name="job_grade" id="job_grade" onclick="rcSearch('job_grade')">
+                <option value=""></option>
+                <option value="9급">9급</option>
+                <option value="8급">8급</option>
+                <option value="7급">7급</option>
+                <option value="6급">6급</option>
+                <option value="5급">5급</option>
+                <option value="4급">4급</option>
+            </select>
+        </div>
+        <div class="mb-3 label-text">
+            <label for="department">부서명</label>
+            <select name="department" id="department" data-recovery="경영지원부" onclick="rcSearch('department')">
+                <option value=""></option>
                 <option value="경영지원부">경영지원부</option>
                 <option value="안전관리부">안전관리부</option>
                 <option value="청렴감사부">청렴감사부</option>
@@ -79,7 +86,7 @@
         </div>
         <div class="mb-3 label-text">
             <label for="relate_Competency">관련역량</label>
-            <select name="relate_Competency" id="relate_Competency" onclick="rcSearch()">
+            <select name="relate_Competency" id="relate_Competency" onclick="rcSearch('relate_Competency')">
                 <option value=""></option>
                 <option value="법정교육">법정교육</option>
                 <option value="공통역량">공통역량</option>
@@ -90,7 +97,7 @@
         </div>
         <div class="mb-3 label-text">
             <label for="education_part">교육분야</label>
-            <select name="education_part" id="education_part" onclick="rcSearch()">
+            <select name="education_part" id="education_part" onclick="rcSearch('education_part')">
                 <option value=""></option>
                 <option value="법정교육">4대폭력예방</option>
                 <option value="법정교육">장애인식개선</option>
@@ -132,7 +139,8 @@
         </div>
         <div class="mb-3 label-text">
             <label for="education_type">교육유형</label>
-            <select name="education_type" id="education_type" data-recovery="기타" onclick="etSearch()">
+            <select name="education_type" id="education_type" data-recovery="기타" onclick="rcSearch('education_type')">
+                <option value=""></option>
                 <option value="집합교육">집합교육</option>
                 <option value="직장교육(초빙강사)">직장교육(초빙강사)</option>
                 <option value="직장교육(부서자체)">직장교육(부서자체)</option>
@@ -147,11 +155,52 @@
             <!--                   value="{{ form.department.value|default_if_none:'' }}">-->
         </div>
         <div class="mb-3">
-            <label for="name" class="form-label label-text">이름</label>
-            <input type="text" class="form-control" name="name" id="name"
-                   value="{{ form.name.value|default_if_none:'' }}">
+            <label for="subject" class="form-label label-text">교육명</label>
+            <input type="text" class="form-control" name="subject" id="subject"
+                   value="{{ form.subject.value|default_if_none:'' }}">
         </div>
         <div class="mb-3">
+            <label for="content" class="form-label label-text">교육내용</label>
+            <textarea class="form-control" name="content"
+                      id="content" rows="10">{{ form.content.value|default_if_none:'' }}</textarea>
+        </div>
+
+        <div class="mb-3 input-group date" id="datetimepicker1" data-target-input="nearest">
+            <input type="text" class="form-control datetimepicker-input" data-target="#datetimepicker1"/>
+            <div class="input-group-append" data-target="#datetimepicker1" data-toggle="datetimepicker">
+                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="education_start" class="form-label label-text">교육시작</label>
+            <input autocomplete="off" type="text" id="datepicker" name="formdate"/>
+            <input type="text" class="form-control" name="education_start" id="education_start"
+                   value="{{ form.education_start.value|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="education_end" class="form-label label-text">교육종료</label>
+            <input type="text" class="form-control" name="education_end" id="education_end"
+                   value="{{ form.education_end.value|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="education_time" class="form-label label-text">교육시간</label>
+            <input type="text" class="form-control" name="education_time" id="education_time"
+                   value="{{ form.education_time.value|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="education_cost" class="form-label label-text">교육비용</label>
+            <input type="text" class="form-control" name="education_cost" id="education_cost"
+                   value="{{ form.education_cost.value|default_if_none:'' }}">
+        </div>
+        <div class="mb-3">
+            <label for="certificate_item" class="form-label label-text">증빙자료</label>
+            <input type="text" class="form-control" name="certificate_item" id="certificate_item"
+                   value="{{ form.certificate_item.value|default_if_none:'' }}">
+        </div>
+        <br/>
+        <br/>
+        <div class="mb-3 label-text">
             <label for="content" class="form-label label-text">첨부 파일1</label>
             <p>{{ form.non_field_errors }}</p>
             <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
@@ -163,7 +212,7 @@
                    value="{{ form.docfile1.value }}">
         </div>
 
-        <div class="mb-3">
+        <div class="mb-3 label-text">
             <label for="content" class="form-label label-text">첨부 파일2</label>
             <p>{{ form.non_field_errors }}</p>
             <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
